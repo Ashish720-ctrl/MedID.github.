@@ -1,0 +1,641 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MediID</title>
+    <style>
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Auth Pages - Desktop Optimized */
+.auth-body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-block-size: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.auth-container {
+  inline-size: 100%;
+  max-inline-size: 1000px; /* Increased for desktop */
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two column layout */
+  gap: 3rem;
+  align-items: center;
+}
+
+/* Left side - Welcome content */
+.auth-welcome {
+  color: white;
+  padding: 2rem;
+}
+
+.auth-welcome h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-block-end: 1rem;
+  line-height: 1.2;
+}
+
+.auth-welcome p {
+  font-size: 1.2rem;
+  margin-block-end: 2rem;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.auth-welcome .features-list {
+  list-style: none;
+  margin-block-end: 2rem;
+}
+
+.auth-welcome .features-list li {
+  display: flex;
+  align-items: center;
+  margin-block-end: 1rem;
+  font-size: 1.1rem;
+}
+
+.auth-welcome .features-list li i {
+  margin-inline-end: 1rem;
+  color: #10b981;
+  font-size: 1.2rem;
+}
+
+.auth-welcome .back-home {
+  display: inline-flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.auth-welcome .back-home:hover {
+  color: white;
+}
+
+.auth-welcome .back-home i {
+  margin-inline-end: 0.5rem;
+}
+
+/* Right side - Auth card */
+.auth-card {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+  inline-size: 100%;
+  max-inline-size: 500px;
+  justify-self: center;
+}
+
+.auth-header {
+  text-align: center;
+  margin-block-end: 2rem;
+}
+
+.auth-header .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-block-end: 1rem;
+}
+
+.auth-header .logo i {
+  margin-inline-end: 0.5rem;
+  font-size: 2.2rem;
+}
+
+.auth-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+  margin-block-end: 0.5rem;
+}
+
+.auth-header p {
+  color: #666;
+  font-size: 1rem;
+}
+
+.role-selector {
+  margin-block-end: 2rem;
+}
+
+.role-selector h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-block-end: 1rem;
+  text-align: center;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.role-card {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.role-card:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.role-card.selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+}
+
+.role-icon {
+  inline-size: 45px;
+  block-size: 45px;
+  background: #2563eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.8rem;
+  font-size: 1.3rem;
+  color: white;
+}
+
+.role-card h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin-block-end: 0.4rem;
+}
+
+.role-card p {
+  font-size: 0.75rem;
+  color: #666;
+  line-height: 1.3;
+}
+
+.auth-form {
+  margin-block-end: 1.5rem;
+}
+
+.form-group {
+  margin-block-end: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  color: #333;
+  margin-block-end: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  inline-size: 100%;
+  padding: 0.8rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  font-family: inherit;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-block-end: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  color: #666;
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  margin-inline-end: 0.5rem;
+  inline-size: auto;
+}
+
+.forgot-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.btn-primary {
+  inline-size: 100%;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+}
+
+.auth-divider {
+  text-align: center;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.auth-divider::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  block-size: 1px;
+  background: #e2e8f0;
+}
+
+.auth-divider span {
+  background: white;
+  padding: 0 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.quick-demo {
+  margin-block-end: 1.5rem;
+}
+
+.quick-demo h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-block-end: 1rem;
+  text-align: center;
+}
+
+.demo-buttons {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.btn-demo {
+  background: #f8fafc;
+  color: #333;
+  border: 2px solid #e2e8f0;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.btn-demo:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.auth-footer {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.auth-footer p {
+  margin-block-end: 0.5rem;
+}
+
+.auth-footer a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Toast Notifications */
+.toast {
+  position: fixed;
+  inset-block-start: 20px;
+  inset-inline-end: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  color: white;
+  font-weight: 500;
+  z-index: 10000;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.toast.show {
+  transform: translateX(0);
+}
+
+.toast-success {
+  background: #059669;
+}
+
+.toast-error {
+  background: #dc2626;
+}
+
+.toast-info {
+  background: #2563eb;
+}
+
+.toast-warning {
+  background: #d97706;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .auth-container {
+    max-inline-size: 800px;
+    gap: 2rem;
+  }
+  
+  .auth-welcome h1 {
+    font-size: 2.5rem;
+  }
+  
+  .auth-card {
+    padding: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    grid-template-columns: 1fr;
+    max-inline-size: 500px;
+    gap: 1rem;
+  }
+  
+  .auth-welcome {
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  .auth-welcome h1 {
+    font-size: 2rem;
+  }
+  
+  .auth-welcome p {
+    font-size: 1rem;
+  }
+  
+  .role-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .auth-card {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-body {
+    padding: 1rem;
+  }
+  
+  .auth-card {
+    padding: 1.5rem;
+  }
+  
+  .auth-welcome {
+    display: none; /* Hide welcome section on very small screens */
+  }
+  
+  .auth-container {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <!-- Left side - Welcome content -->
+        <div class="auth-welcome">
+            <h1>Welcome to MediID</h1>
+            <p>Your complete digital health identity platform. Secure, accessible, and always available when you need it most.</p>
+            
+            <ul class="features-list">
+                <li><i class="fas fa-check-circle"></i> Secure health data storage</li>
+                <li><i class="fas fa-check-circle"></i> Emergency QR code access</li>
+                <li><i class="fas fa-check-circle"></i> Role-based permissions</li>
+                <li><i class="fas fa-check-circle"></i> PDF export & sharing</li>
+            </ul>
+            
+            <a href="index.html" class="back-home">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </div>
+
+        <!-- Right side - Auth card -->
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    MediID
+                </div>
+                <h2>Sign In</h2>
+                <p>Choose your role and access your digital health identity</p>
+            </div>
+
+            <div class="role-selector">
+                <h3>Select Your Role</h3>
+                <div class="role-grid">
+                    <div class="role-card" data-role="patient">
+                        <div class="role-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h4>Patient</h4>
+                        <p>Full access to manage health profile</p>
+                    </div>
+                    <div class="role-card" data-role="family">
+                        <div class="role-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Family</h4>
+                        <p>View family member's information</p>
+                    </div>
+                    <div class="role-card" data-role="emergency">
+                        <div class="role-icon">
+                            <i class="fas fa-ambulance"></i>
+                        </div>
+                        <h4>Emergency</h4>
+                        <p>Quick access to critical info</p>
+                    </div>
+                </div>
+            </div>
+
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="remember">
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>or try demo</span>
+            </div>
+
+            <div class="quick-demo">
+                <h4>Quick Demo Access</h4>
+                <div class="demo-buttons">
+                    <button class="btn-demo" onclick="quickLogin('patient')">
+                        <i class="fas fa-user"></i> Demo as Patient
+                    </button>
+                    <button class="btn-demo" onclick="quickLogin('family')">
+                        <i class="fas fa-users"></i> Demo as Family
+                    </button>
+                    <button class="btn-demo" onclick="quickLogin('emergency')">
+                        <i class="fas fa-ambulance"></i> Demo as Emergency
+                    </button>
+                </div>
+            </div>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="#" onclick="showRegister()">Create one now</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedRole = 'patient';
+
+        // Role selection
+        document.querySelectorAll('.role-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedRole = card.dataset.role;
+            });
+        });
+
+        // Set default selection
+        document.querySelector('.role-card[data-role="patient"]').classList.add('selected');
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                localStorage.setItem('userRole', selectedRole);
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                showToast('Login successful!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            }
+        });
+
+        // Quick demo login
+        function quickLogin(role) {
+            localStorage.setItem('userRole', role);
+            localStorage.setItem('userEmail', `demo@${role}.com`);
+            localStorage.setItem('isLoggedIn', 'true');
+            
+            showToast(`Logged in as ${role}!`, 'success');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1000);
+        }
+
+        function showRegister() {
+            showToast('Registration feature coming soon!', 'info');
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

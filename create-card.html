@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Health Card - MediID</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    MediID
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="create-card.html" class="nav-item active">
+                    <i class="fas fa-plus-circle"></i>
+                    Create Health Card
+                </a>
+                <a href="history.html" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    Medical History
+                </a>
+                <a href="summary.html" class="nav-item">
+                    <i class="fas fa-file-medical"></i>
+                    Health Summary
+                </a>
+                <a href="emergency-view.html" class="nav-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Emergency View
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1><i class="fas fa-plus-circle"></i> Create Health Card</h1>
+                <p>Fill in your health information to create your digital health identity</p>
+            </header>
+
+            <div class="form-container">
+                <form id="healthCardForm" class="health-card-form">
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-user"></i> Personal Information</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="fullName">Full Name *</label>
+                                <input type="text" id="fullName" name="fullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dateOfBirth">Date of Birth *</label>
+                                <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender *</label>
+                                <select id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                    <option value="prefer-not-to-say">Prefer not to say</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="bloodGroup">Blood Group *</label>
+                                <select id="bloodGroup" name="bloodGroup" required>
+                                    <option value="">Select Blood Group</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="height">Height (cm)</label>
+                                <input type="number" id="height" name="height" placeholder="170">
+                            </div>
+                            <div class="form-group">
+                                <label for="weight">Weight (kg)</label>
+                                <input type="number" id="weight" name="weight" placeholder="70">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medical Information -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-stethoscope"></i> Medical Information</h2>
+                        
+                        <div class="form-group">
+                            <label for="allergies">Allergies</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="allergies" value="penicillin">
+                                    <span class="checkmark"></span>
+                                    Penicillin
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="allergies" value="peanuts">
+                                    <span class="checkmark"></span>
+                                    Peanuts
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="allergies" value="shellfish">
+                                    <span class="checkmark"></span>
+                                    Shellfish
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="allergies" value="latex">
+                                    <span class="checkmark"></span>
+                                    Latex
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="allergies" value="dust">
+                                    <span class="checkmark"></span>
+                                    Dust
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="allergies" value="pollen">
+                                    <span class="checkmark"></span>
+                                    Pollen
+                                </label>
+                            </div>
+                            <input type="text" id="otherAllergies" name="otherAllergies" placeholder="Other allergies (comma separated)">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="conditions">Medical Conditions</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="conditions" value="diabetes">
+                                    <span class="checkmark"></span>
+                                    Diabetes
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="conditions" value="hypertension">
+                                    <span class="checkmark"></span>
+                                    Hypertension
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="conditions" value="asthma">
+                                    <span class="checkmark"></span>
+                                    Asthma
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="conditions" value="heart-disease">
+                                    <span class="checkmark"></span>
+                                    Heart Disease
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="conditions" value="epilepsy">
+                                    <span class="checkmark"></span>
+                                    Epilepsy
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="conditions" value="arthritis">
+                                    <span class="checkmark"></span>
+                                    Arthritis
+                                </label>
+                            </div>
+                            <input type="text" id="otherConditions" name="otherConditions" placeholder="Other conditions (comma separated)">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="medications">Current Medications</label>
+                            <textarea id="medications" name="medications" rows="3" placeholder="List your current medications, dosages, and frequency"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contact -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-phone"></i> Emergency Contact</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="emergencyName">Contact Name *</label>
+                                <input type="text" id="emergencyName" name="emergencyName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="emergencyPhone">Phone Number *</label>
+                                <input type="tel" id="emergencyPhone" name="emergencyPhone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="emergencyRelation">Relationship *</label>
+                                <select id="emergencyRelation" name="emergencyRelation" required>
+                                    <option value="">Select Relationship</option>
+                                    <option value="spouse">Spouse</option>
+                                    <option value="parent">Parent</option>
+                                    <option value="child">Child</option>
+                                    <option value="sibling">Sibling</option>
+                                    <option value="friend">Friend</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="emergencyEmail">Email (Optional)</label>
+                                <input type="email" id="emergencyEmail" name="emergencyEmail">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-notes-medical"></i> Additional Information</h2>
+                        <div class="form-group">
+                            <label for="doctorName">Primary Doctor</label>
+                            <input type="text" id="doctorName" name="doctorName" placeholder="Dr. John Smith">
+                        </div>
+                        <div class="form-group">
+                            <label for="doctorPhone">Doctor's Phone</label>
+                            <input type="tel" id="doctorPhone" name="doctorPhone" placeholder="+1 (555) 123-4567">
+                        </div>
+                        <div class="form-group">
+                            <label for="insuranceProvider">Insurance Provider</label>
+                            <input type="text" id="insuranceProvider" name="insuranceProvider" placeholder="Blue Cross Blue Shield">
+                        </div>
+                        <div class="form-group">
+                            <label for="insuranceNumber">Insurance Number</label>
+                            <input type="text" id="insuranceNumber" name="insuranceNumber" placeholder="ABC123456789">
+                        </div>
+                        <div class="form-group">
+                            <label for="additionalNotes">Additional Notes</label>
+                            <textarea id="additionalNotes" name="additionalNotes" rows="3" placeholder="Any additional medical information or special instructions"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="history.back()">
+                            <i class="fas fa-arrow-left"></i>
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i>
+                            Save Health Card
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+
+        // Load existing health card data if available
+        function loadHealthCardData() {
+            const healthCard = JSON.parse(localStorage.getItem('healthCard') || '{}');
+            
+            Object.keys(healthCard).forEach(key => {
+                const element = document.getElementById(key) || document.querySelector(`[name="${key}"]`);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        if (Array.isArray(healthCard[key])) {
+                            healthCard[key].forEach(value => {
+                                const checkbox = document.querySelector(`[name="${key}"][value="${value}"]`);
+                                if (checkbox) checkbox.checked = true;
+                            });
+                        }
+                    } else {
+                        element.value = healthCard[key];
+                    }
+                }
+            });
+        }
+
+        // Save health card form
+        document.getElementById('healthCardForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const healthCard = {};
+            
+            // Get regular form fields
+            for (let [key, value] of formData.entries()) {
+                if (key === 'allergies' || key === 'conditions') {
+                    if (!healthCard[key]) healthCard[key] = [];
+                    healthCard[key].push(value);
+                } else {
+                    healthCard[key] = value;
+                }
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('healthCard', JSON.stringify(healthCard));
+            localStorage.setItem('healthCardCreated', 'true');
+            
+            showToast('Health card saved successfully!', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'summary.html';
+            }, 1500);
+        });
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Load existing data on page load
+        loadHealthCardData();
+    </script>
+</body>
+</html>

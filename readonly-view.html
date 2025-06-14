@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Card View - MediID</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="readonly-body">
+    <div class="readonly-container">
+        <header class="readonly-header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                MediID
+            </div>
+            <div class="view-mode">
+                <i class="fas fa-eye"></i>
+                Read-Only View
+            </div>
+        </header>
+
+        <div class="readonly-card">
+            <div class="card-header">
+                <h1><i class="fas fa-id-card"></i> Digital Health Card</h1>
+                <div class="card-id">ID: #HC001</div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="card-section">
+                <h2><i class="fas fa-user"></i> Personal Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Full Name</label>
+                        <span id="displayName">John Doe</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Date of Birth</label>
+                        <span id="displayDOB">January 15, 1990</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Gender</label>
+                        <span id="displayGender">Male</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Blood Group</label>
+                        <span id="displayBloodGroup" class="blood-type">O+</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Information -->
+            <div class="card-section">
+                <h2><i class="fas fa-stethoscope"></i> Medical Information</h2>
+                <div class="medical-info">
+                    <div class="info-block">
+                        <h3>Allergies</h3>
+                        <div id="displayAllergies" class="tags-container">
+                            <span class="tag tag-warning">Penicillin</span>
+                            <span class="tag tag-warning">Peanuts</span>
+                        </div>
+                    </div>
+                    <div class="info-block">
+                        <h3>Medical Conditions</h3>
+                        <div id="displayConditions" class="tags-container">
+                            <span class="tag tag-info">Hypertension</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="card-section">
+                <h2><i class="fas fa-phone"></i> Emergency Contact</h2>
+                <div class="emergency-contact">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-user"></i>
+                            <div>
+                                <label>Name</label>
+                                <span id="displayEmergencyName">Jane Doe</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <label>Phone</label>
+                                <span id="displayEmergencyPhone">+1 (555) 123-4567</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-heart"></i>
+                            <div>
+                                <label>Relationship</label>
+                                <span id="displayEmergencyRelation">Spouse</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Access Controls -->
+            <div class="access-controls">
+                <button class="btn-emergency" onclick="switchToEmergencyView()">
+                    <i class="fas fa-ambulance"></i>
+                    Emergency View
+                </button>
+                <button class="btn-secondary" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </button>
+            </div>
+        </div>
+
+        <footer class="readonly-footer">
+            <p>This is a read-only view of the health card. For full access, please log in.</p>
+            <p><a href="login.html">Login to MediID</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Load health card data (demo data or from localStorage)
+        function loadReadOnlyData() {
+            const healthCard = JSON.parse(localStorage.getItem('healthCard') || '{}');
+            
+            // If no data in localStorage, show demo data
+            if (Object.keys(healthCard).length === 0) {
+                // Demo data is already in HTML
+                return;
+            }
+
+            // Load actual data
+            document.getElementById('displayName').textContent = healthCard.fullName || 'John Doe';
+            document.getElementById('displayDOB').textContent = healthCard.dateOfBirth ? formatDate(healthCard.dateOfBirth) : 'January 15, 1990';
+            document.getElementById('displayGender').textContent = healthCard.gender ? capitalizeFirst(healthCard.gender) : 'Male';
+            document.getElementById('displayBloodGroup').textContent = healthCard.bloodGroup || 'O+';
+
+            // Allergies
+            const allergiesContainer = document.getElementById('displayAllergies');
+            if (healthCard.allergies && healthCard.allergies.length > 0) {
+                let allAllergies = [...healthCard.allergies];
+                if (healthCard.otherAllergies) {
+                    allAllergies = allAllergies.concat(healthCard.otherAllergies.split(',').map(a => a.trim()));
+                }
+                allergiesContainer.innerHTML = allAllergies.map(allergy => 
+                    `<span class="tag tag-warning">${allergy}</span>`
+                ).join('');
+            }
+
+            // Conditions
+            const conditionsContainer = document.getElementById('displayConditions');
+            if (healthCard.conditions && healthCard.conditions.length > 0) {
+                let allConditions = [...healthCard.conditions];
+                if (healthCard.otherConditions) {
+                    allConditions = allConditions.concat(healthCard.otherConditions.split(',').map(c => c.trim()));
+                }
+                conditionsContainer.innerHTML = allConditions.map(condition => 
+                    `<span class="tag tag-info">${condition}</span>`
+                ).join('');
+            }
+
+            // Emergency Contact
+            document.getElementById('displayEmergencyName').textContent = healthCard.emergencyName || 'Jane Doe';
+            document.getElementById('displayEmergencyPhone').textContent = healthCard.emergencyPhone || '+1 (555) 123-4567';
+            document.getElementById('displayEmergencyRelation').textContent = healthCard.emergencyRelation ? capitalizeFirst(healthCard.emergencyRelation) : 'Spouse';
+        }
+
+        function switchToEmergencyView() {
+            window.location.href = 'emergency-view.html';
+        }
+
+        function goBack() {
+            if (document.referrer) {
+                history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1).replace('-', ' ');
+        }
+
+        // Initialize page
+        loadReadOnlyData();
+    </script>
+</body>
+</html>

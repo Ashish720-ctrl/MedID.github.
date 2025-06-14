@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MediID</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    MediID
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="create-card.html" class="nav-item">
+                    <i class="fas fa-plus-circle"></i>
+                    Create Health Card
+                </a>
+                <a href="history.html" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    Medical History
+                </a>
+                <a href="summary.html" class="nav-item">
+                    <i class="fas fa-file-medical"></i>
+                    Health Summary
+                </a>
+                <a href="emergency-view.html" class="nav-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Emergency View
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Dashboard</h1>
+                    <p>Welcome back, <span id="userName">User</span></p>
+                </div>
+                <div class="header-right">
+                    <div class="role-badge" id="roleBadge">
+                        <i class="fas fa-user"></i>
+                        <span id="roleText">Patient</span>
+                    </div>
+                    <button class="btn-switch-role" onclick="switchRole()">
+                        <i class="fas fa-exchange-alt"></i>
+                        Switch Role
+                    </button>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="healthCardsCount">1</h3>
+                        <p>Health Cards</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-medical"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="medicalRecords">5</h3>
+                        <p>Medical Records</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="qrScans">12</h3>
+                        <p>QR Code Scans</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pdfExports">3</h3>
+                        <p>PDF Exports</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-section">
+                <h2>Quick Actions</h2>
+                <div class="actions-grid" id="actionsGrid">
+                    <!-- Actions will be populated by JavaScript based on role -->
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="dashboard-section">
+                <h2>Recent Activity</h2>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Health card created</h4>
+                            <p>Your digital health card has been successfully created</p>
+                            <span class="activity-time">2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>QR code generated</h4>
+                            <p>New QR code generated for health card sharing</p>
+                            <span class="activity-time">1 day ago</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>PDF exported</h4>
+                            <p>Health summary exported as PDF document</p>
+                            <span class="activity-time">3 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+
+        // Load user data
+        const userRole = localStorage.getItem('userRole') || 'patient';
+        const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
+
+        // Update UI based on role
+        function updateDashboard() {
+            const roleText = document.getElementById('roleText');
+            const roleBadge = document.getElementById('roleBadge');
+            const userName = document.getElementById('userName');
+            const actionsGrid = document.getElementById('actionsGrid');
+
+            // Update user name
+            userName.textContent = userEmail.split('@')[0];
+
+            // Update role badge
+            const roleConfig = {
+                patient: { icon: 'fas fa-user', text: 'Patient', color: '#2563eb' },
+                family: { icon: 'fas fa-users', text: 'Family Member', color: '#059669' },
+                emergency: { icon: 'fas fa-ambulance', text: 'Emergency Responder', color: '#dc2626' }
+            };
+
+            const config = roleConfig[userRole];
+            roleText.textContent = config.text;
+            roleBadge.querySelector('i').className = config.icon;
+            roleBadge.style.background = config.color;
+
+            // Update actions based on role
+            actionsGrid.innerHTML = getActionsForRole(userRole);
+        }
+
+        function getActionsForRole(role) {
+            const patientActions = `
+                <div class="action-card" onclick="location.href='create-card.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h3>Create Health Card</h3>
+                    <p>Set up your digital health identity</p>
+                </div>
+                <div class="action-card" onclick="location.href='history.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3>Add Medical History</h3>
+                    <p>Record visits, medications, and tests</p>
+                </div>
+                <div class="action-card" onclick="location.href='summary.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-file-medical"></i>
+                    </div>
+                    <h3>View Health Summary</h3>
+                    <p>See your complete health profile</p>
+                </div>
+                <div class="action-card" onclick="generateQR()">
+                    <div class="action-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h3>Generate QR Code</h3>
+                    <p>Create shareable QR code</p>
+                </div>
+                <div class="action-card" onclick="exportPDF()">
+                    <div class="action-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3>Export PDF</h3>
+                    <p>Download health summary</p>
+                </div>
+                <div class="action-card" onclick="location.href='emergency-view.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Emergency Mode</h3>
+                    <p>Quick access to critical info</p>
+                </div>
+            `;
+
+            const familyActions = `
+                <div class="action-card" onclick="location.href='readonly-view.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>View Health Cards</h3>
+                    <p>Access family member's health info</p>
+                </div>
+                <div class="action-card" onclick="location.href='emergency-view.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Emergency Access</h3>
+                    <p>Quick access to critical information</p>
+                </div>
+                <div class="action-card" onclick="exportPDF()">
+                    <div class="action-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3>Export Reports</h3>
+                    <p>Download health summaries</p>
+                </div>
+            `;
+
+            const emergencyActions = `
+                <div class="action-card" onclick="location.href='emergency-view.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <h3>Emergency Scan</h3>
+                    <p>Quick access to critical health info</p>
+                </div>
+                <div class="action-card" onclick="location.href='readonly-view.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h3>Scan QR Code</h3>
+                    <p>Access patient information via QR</p>
+                </div>
+            `;
+
+            switch(role) {
+                case 'family': return familyActions;
+                case 'emergency': return emergencyActions;
+                default: return patientActions;
+            }
+        }
+
+        function switchRole() {
+            const roles = ['patient', 'family', 'emergency'];
+            const currentIndex = roles.indexOf(userRole);
+            const nextRole = roles[(currentIndex + 1) % roles.length];
+            
+            localStorage.setItem('userRole', nextRole);
+            location.reload();
+        }
+
+        function generateQR() {
+            showToast('QR Code generated successfully!', 'success');
+        }
+
+        function exportPDF() {
+            showToast('PDF export started...', 'info');
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Initialize dashboard
+        updateDashboard();
+    </script>
+</body>
+</html>

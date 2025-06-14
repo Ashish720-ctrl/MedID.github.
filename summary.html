@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Summary - MediID</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    MediID
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="create-card.html" class="nav-item">
+                    <i class="fas fa-plus-circle"></i>
+                    Create Health Card
+                </a>
+                <a href="history.html" class="nav-item">
+                    <i class="fas fa-history"></i>
+                    Medical History
+                </a>
+                <a href="summary.html" class="nav-item active">
+                    <i class="fas fa-file-medical"></i>
+                    Health Summary
+                </a>
+                <a href="emergency-view.html" class="nav-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Emergency View
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1><i class="fas fa-file-medical"></i> Health Summary</h1>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="generateQRCode()">
+                        <i class="fas fa-qrcode"></i>
+                        Generate QR Code
+                    </button>
+                    <button class="btn-primary" onclick="exportToPDF()">
+                        <i class="fas fa-download"></i>
+                        Export PDF
+                    </button>
+                </div>
+            </header>
+
+            <div class="summary-container">
+                <!-- Health Card Display -->
+                <div class="health-card-display" id="healthCardDisplay">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-id-card"></i>
+                            Digital Health Card
+                        </div>
+                        <div class="card-id">ID: #HC001</div>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="card-section">
+                        <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Full Name</label>
+                                <span id="displayName">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Date of Birth</label>
+                                <span id="displayDOB">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Gender</label>
+                                <span id="displayGender">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Blood Group</label>
+                                <span id="displayBloodGroup" class="blood-type">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Height</label>
+                                <span id="displayHeight">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Weight</label>
+                                <span id="displayWeight">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medical Information -->
+                    <div class="card-section">
+                        <h3><i class="fas fa-stethoscope"></i> Medical Information</h3>
+                        <div class="medical-info">
+                            <div class="info-block">
+                                <h4>Allergies</h4>
+                                <div id="displayAllergies" class="tags-container">
+                                    <span class="tag">No allergies recorded</span>
+                                </div>
+                            </div>
+                            <div class="info-block">
+                                <h4>Medical Conditions</h4>
+                                <div id="displayConditions" class="tags-container">
+                                    <span class="tag">No conditions recorded</span>
+                                </div>
+                            </div>
+                            <div class="info-block">
+                                <h4>Current Medications</h4>
+                                <div id="displayMedications" class="medication-list">
+                                    <p>No medications recorded</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contact -->
+                    <div class="card-section">
+                        <h3><i class="fas fa-phone"></i> Emergency Contact</h3>
+                        <div class="emergency-contact">
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <i class="fas fa-user"></i>
+                                    <div>
+                                        <label>Name</label>
+                                        <span id="displayEmergencyName">-</span>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    <div>
+                                        <label>Phone</label>
+                                        <span id="displayEmergencyPhone">-</span>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-heart"></i>
+                                    <div>
+                                        <label>Relationship</label>
+                                        <span id="displayEmergencyRelation">-</span>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <div>
+                                        <label>Email</label>
+                                        <span id="displayEmergencyEmail">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="card-section">
+                        <h3><i class="fas fa-notes-medical"></i> Additional Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Primary Doctor</label>
+                                <span id="displayDoctorName">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Doctor's Phone</label>
+                                <span id="displayDoctorPhone">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Insurance Provider</label>
+                                <span id="displayInsuranceProvider">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Insurance Number</label>
+                                <span id="displayInsuranceNumber">-</span>
+                            </div>
+                        </div>
+                        <div class="info-block">
+                            <h4>Additional Notes</h4>
+                            <p id="displayAdditionalNotes">No additional notes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical History Summary -->
+                <div class="history-summary">
+                    <h2><i class="fas fa-history"></i> Recent Medical History</h2>
+                    
+                    <div class="history-tabs-summary">
+                        <div class="history-section">
+                            <h3><i class="fas fa-user-md"></i> Recent Visits</h3>
+                            <div id="recentVisits" class="history-items">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="history-section">
+                            <h3><i class="fas fa-pills"></i> Current Medications</h3>
+                            <div id="currentMedications" class="history-items">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="history-section">
+                            <h3><i class="fas fa-vial"></i> Recent Tests</h3>
+                            <div id="recentTests" class="history-items">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QR Code Modal -->
+            <div id="qrModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-qrcode"></i> Your Health Card QR Code</h2>
+                        <button class="modal-close" onclick="closeQRModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="qr-container">
+                            <canvas id="qrCanvas"></canvas>
+                            <p>Scan this QR code to access your health card</p>
+                            <div class="qr-actions">
+                                <button class="btn-secondary" onclick="downloadQR()">
+                                    <i class="fas fa-download"></i>
+                                    Download QR Code
+                                </button>
+                                <button class="btn-primary" onclick="shareQR()">
+                                    <i class="fas fa-share"></i>
+                                    Share QR Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+
+        // Load health card data
+        function loadHealthCardData() {
+            const healthCard = JSON.parse(localStorage.getItem('healthCard') || '{}');
+            
+            // Personal Information
+            document.getElementById('displayName').textContent = healthCard.fullName || '-';
+            document.getElementById('displayDOB').textContent = healthCard.dateOfBirth ? formatDate(healthCard.dateOfBirth) : '-';
+            document.getElementById('displayGender').textContent = healthCard.gender ? capitalizeFirst(healthCard.gender) : '-';
+            document.getElementById('displayBloodGroup').textContent = healthCard.bloodGroup || '-';
+            document.getElementById('displayHeight').textContent = healthCard.height ? `${healthCard.height} cm` : '-';
+            document.getElementById('displayWeight').textContent = healthCard.weight ? `${healthCard.weight} kg` : '-';
+
+            // Allergies
+            const allergiesContainer = document.getElementById('displayAllergies');
+            if (healthCard.allergies && healthCard.allergies.length > 0) {
+                let allAllergies = [...healthCard.allergies];
+                if (healthCard.otherAllergies) {
+                    allAllergies = allAllergies.concat(healthCard.otherAllergies.split(',').map(a => a.trim()));
+                }
+                allergiesContainer.innerHTML = allAllergies.map(allergy => 
+                    `<span class="tag tag-warning">${allergy}</span>`
+                ).join('');
+            }
+
+            // Conditions
+            const conditionsContainer = document.getElementById('displayConditions');
+            if (healthCard.conditions && healthCard.conditions.length > 0) {
+                let allConditions = [...healthCard.conditions];
+                if (healthCard.otherConditions) {
+                    allConditions = allConditions.concat(healthCard.otherConditions.split(',').map(c => c.trim()));
+                }
+                conditionsContainer.innerHTML = allConditions.map(condition => 
+                    `<span class="tag tag-info">${condition}</span>`
+                ).join('');
+            }
+
+            // Medications
+            const medicationsContainer = document.getElementById('displayMedications');
+            if (healthCard.medications) {
+                medicationsContainer.innerHTML = `<p>${healthCard.medications}</p>`;
+            }
+
+            // Emergency Contact
+            document.getElementById('displayEmergencyName').textContent = healthCard.emergencyName || '-';
+            document.getElementById('displayEmergencyPhone').textContent = healthCard.emergencyPhone || '-';
+            document.getElementById('displayEmergencyRelation').textContent = healthCard.emergencyRelation ? capitalizeFirst(healthCard.emergencyRelation) : '-';
+            document.getElementById('displayEmergencyEmail').textContent = healthCard.emergencyEmail || '-';
+
+            // Additional Information
+            document.getElementById('displayDoctorName').textContent = healthCard.doctorName || '-';
+            document.getElementById('displayDoctorPhone').textContent = healthCard.doctorPhone || '-';
+            document.getElementById('displayInsuranceProvider').textContent = healthCard.insuranceProvider || '-';
+            document.getElementById('displayInsuranceNumber').textContent = healthCard.insuranceNumber || '-';
+            document.getElementById('displayAdditionalNotes').textContent = healthCard.additionalNotes || 'No additional notes';
+        }
+
+        // Load medical history summary
+        function loadMedicalHistorySummary() {
+            const visits = JSON.parse(localStorage.getItem('medicalVisits') || '[]');
+            const medications = JSON.parse(localStorage.getItem('medications') || '[]');
+            const tests = JSON.parse(localStorage.getItem('testReports') || '[]');
+
+            // Recent visits (last 3)
+            const recentVisitsContainer = document.getElementById('recentVisits');
+            const recentVisits = visits.slice(0, 3);
+            if (recentVisits.length > 0) {
+                recentVisitsContainer.innerHTML = recentVisits.map(visit => `
+                    <div class="history-item-summary">
+                        <div class="item-header">
+                            <strong>${visit.doctor}</strong>
+                            <span class="item-date">${formatDate(visit.date)}</span>
+                        </div>
+                        <p>${visit.reason || visit.specialty || 'General visit'}</p>
+                    </div>
+                `).join('');
+            } else {
+                recentVisitsContainer.innerHTML = '<p class="no-data">No recent visits recorded</p>';
+            }
+
+            // Current medications (active ones)
+            const currentMedicationsContainer = document.getElementById('currentMedications');
+            const activeMedications = medications.filter(med => !med.endDate || new Date(med.endDate) > new Date());
+            if (activeMedications.length > 0) {
+                currentMedicationsContainer.innerHTML = activeMedications.slice(0, 5).map(med => `
+                    <div class="history-item-summary">
+                        <div class="item-header">
+                            <strong>${med.name}</strong>
+                            <span class="item-dosage">${med.dosage}</span>
+                        </div>
+                        <p>${med.frequency ? med.frequency.replace('-', ' ') : 'As prescribed'}</p>
+                    </div>
+                `).join('');
+            } else {
+                currentMedicationsContainer.innerHTML = '<p class="no-data">No current medications recorded</p>';
+            }
+
+            // Recent tests (last 3)
+            const recentTestsContainer = document.getElementById('recentTests');
+            const recentTests = tests.slice(0, 3);
+            if (recentTests.length > 0) {
+                recentTestsContainer.innerHTML = recentTests.map(test => `
+                    <div class="history-item-summary">
+                        <div class="item-header">
+                            <strong>${test.name}</strong>
+                            <span class="item-date">${formatDate(test.date)}</span>
+                        </div>
+                        <p>${test.lab || 'Lab test'}</p>
+                    </div>
+                `).join('');
+            } else {
+                recentTestsContainer.innerHTML = '<p class="no-data">No recent tests recorded</p>';
+            }
+        }
+
+        // Generate QR Code
+        function generateQRCode() {
+            const healthCardUrl = `${window.location.origin}/readonly-view.html`;
+            const canvas = document.getElementById('qrCanvas');
+            
+            QRCode.toCanvas(canvas, healthCardUrl, {
+                inlineSize: 256,
+                margin: 2,
+                color: {
+                    dark: '#2563eb',
+                    light: '#ffffff'
+                }
+            }, function (error) {
+                if (error) {
+                    showToast('Error generating QR code', 'error');
+                } else {
+                    document.getElementById('qrModal').style.display = 'flex';
+                }
+            });
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+
+        function downloadQR() {
+            const canvas = document.getElementById('qrCanvas');
+            const link = document.createElement('a');
+            link.download = 'health-card-qr.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            showToast('QR code downloaded!', 'success');
+        }
+
+        function shareQR() {
+            if (navigator.share) {
+                const canvas = document.getElementById('qrCanvas');
+                canvas.toBlob(blob => {
+                    const file = new File([blob], 'health-card-qr.png', { type: 'image/png' });
+                    navigator.share({
+                        title: 'My Health Card QR Code',
+                        text: 'Scan this QR code to access my health information',
+                        files: [file]
+                    });
+                });
+            } else {
+                showToast('Sharing not supported on this device', 'info');
+            }
+        }
+
+        // Export to PDF
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.setTextColor(37, 99, 235);
+            doc.text('MediID - Digital Health Card', 20, 20);
+            
+            // Add personal information
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Personal Information', 20, 40);
+            
+            const healthCard = JSON.parse(localStorage.getItem('healthCard') || '{}');
+            let yPos = 50;
+            
+            const personalInfo = [
+                ['Name:', healthCard.fullName || '-'],
+                ['Date of Birth:', healthCard.dateOfBirth ? formatDate(healthCard.dateOfBirth) : '-'],
+                ['Gender:', healthCard.gender ? capitalizeFirst(healthCard.gender) : '-'],
+                ['Blood Group:', healthCard.bloodGroup || '-'],
+                ['block-size:', healthCard.height ? `${healthCard.height} cm` : '-'],
+                ['Weight:', healthCard.weight ? `${healthCard.weight} kg` : '-']
+            ];
+            
+            personalInfo.forEach(([label, value]) => {
+                doc.setFontSize(12);
+                doc.text(label, 20, yPos);
+                doc.text(value, 80, yPos);
+                yPos += 8;
+            });
+            
+            // Add medical information
+            yPos += 10;
+            doc.setFontSize(16);
+            doc.text('Medical Information', 20, yPos);
+            yPos += 10;
+            
+            if (healthCard.allergies && healthCard.allergies.length > 0) {
+                doc.setFontSize(12);
+                doc.text('Allergies:', 20, yPos);
+                doc.text(healthCard.allergies.join(', '), 20, yPos + 8);
+                yPos += 20;
+            }
+            
+            if (healthCard.conditions && healthCard.conditions.length > 0) {
+                doc.setFontSize(12);
+                doc.text('Conditions:', 20, yPos);
+                doc.text(healthCard.conditions.join(', '), 20, yPos + 8);
+                yPos += 20;
+            }
+            
+            // Add emergency contact
+            yPos += 10;
+            doc.setFontSize(16);
+            doc.text('Emergency Contact', 20, yPos);
+            yPos += 10;
+            
+            const emergencyInfo = [
+                ['Name:', healthCard.emergencyName || '-'],
+                ['Phone:', healthCard.emergencyPhone || '-'],
+                ['Relationship:', healthCard.emergencyRelation ? capitalizeFirst(healthCard.emergencyRelation) : '-']
+            ];
+            
+            emergencyInfo.forEach(([label, value]) => {
+                doc.setFontSize(12);
+                doc.text(label, 20, yPos);
+                doc.text(value, 80, yPos);
+                yPos += 8;
+            });
+            
+            // Save the PDF
+            doc.save('health-card-summary.pdf');
+            showToast('PDF exported successfully!', 'success');
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1).replace('-', ' ');
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Initialize page
+        loadHealthCardData();
+        loadMedicalHistorySummary();
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('qrModal');
+            if (event.target === modal) {
+                closeQRModal();
+            }
+        }
+    </script>
+</body>
+</html>
